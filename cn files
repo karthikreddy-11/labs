@@ -1,0 +1,728 @@
+
+1. A simple program to print the IP address of the system
+Algorithm
+1. Import all the required packages net, and io packages
+2. Create a class ipclient
+3. Initialize InetAddress class and create the object ia.
+4. Get the Ip address of the system using getLocalHost() method
+5. Print the IP address.
+PROGRAM
+import java.net.*;
+import java.io.*;
+class ipclient
+{
+public static void main(String args[])
+{
+try
+{
+InetAddress ia=InetAddress.getLocalHost();
+System.out.println("The client system address is: "+ia);
+}
+catch(IOException e)
+{
+System.out.println("The exception is: "+e);
+}
+}
+}
+OUTPUT:
+
+
+
+
+1b. Printing Client Address at Server Side
+Aim : Design a socket program to print the client address at the server side
+Algorithm
+Server:
+1. Import all the required io and net packages
+2. Create a class Sip
+3. Initialize the classes ServerSocket and Socket and their respective objects.
+4. Initialize the class DataInputStream for reading the data from socket through
+getInputStream() method.
+5. Establish the connection with client system using the client IP and port number 8020
+6. Read the IP address from the socket
+7. Print the IP address at the server
+Client:
+1. Import all the required io and net packages
+2. Create a class Cip
+3. Initialize the classes Socket and their respective objects.
+4. Initialize the class PrintStream Class for writing data into the socket through
+getOutputStream() method.
+5. Get the IP address of the system using InetAddress class with getLocalHost() method.
+6. Establish the connection with server system using the IP address and port number 8020
+7. Write the IP address into the socket
+8. If any exception arise, print the error.
+Program:
+import java.io.*;
+import java.net.*;
+class Sip
+{
+public static void main(String args[])
+{
+ServerSocket ss;
+Socket s;
+DataInputStream dis;
+String ip;
+try
+{
+ss=new ServerSocket(8020);
+while(true)
+{
+s=ss.accept();
+dis=new DataInputStream(s.getInputStream());
+ip=dis.readLine();
+System.out.println("Ip address of the client system is"+ip);
+}
+}
+catch(IOException e)
+{
+System.out.println("The exception is: "+e);
+}
+}
+}
+import java.io.*;
+import java.net.*;
+class Cip
+{
+public static void main(String args[])
+{
+Socket soc;
+PrintStream ps;
+try
+{
+InetAddress ia=InetAddress.getLocalHost();
+soc=new Socket(ia,8020);
+ps=new PrintStream(soc.getOutputStream());
+ps.println(ia);
+}
+catch(IOException e)
+{
+System.out.println("The exception is: "+e);
+}
+}
+}
+Output
+Server side Terminal
+
+
+
+
+2. T I M E A N D D A T E S E R V E R
+Aim: To design a Java program to implement a Date server and print the date and time on the
+client side.
+Algorithm : Server Program
+1. Import required libraries.
+2. Declare necessary objects: ServerSocket, Socket, PrintStream, DataInputStream, and
+Date.
+3. Initialize ServerSocket, Create a ServerSocket object to listen on port 8020.
+4. Repeatedly do the process to keep the server running and continuously accept client
+connections.
+5. Use ss.accept() to accept a connection from a client, creating a Socket object s.
+6. Create a PrintStream object ps to send data to the client through the socket's output
+stream.
+7. Create a Date object d to get the current date and time.
+8. Use ps.println(d) to send the date and time to the client.
+9. Close the PrintStream object ps.
+10. Catch and handle IOException by printing the exception message.
+Algorithm : Client Program
+1. Import required io and net libraries.
+2. Declare necessary objects: Socket, DataInputStream, PrintStream, and String.
+3. Initialize Client Socket, Get the local host address using InetAddress.getLocalHost().
+4. Create a Socket object soc to connect to the server on port 8020.
+5. Create a DataInputStream object dis to read data from the server through the socket's
+input stream.
+6. Read the date and time from the server using dis.readLine() and store it in the String
+variable sdate.
+7. Print the received date and time using System.out.println().
+8. Catch and handle IOException by printing the exception message.
+SERVER PROGRAM
+import java.io.*;
+import java.net.*;
+import java.util.*;
+class dateserver
+{
+public static void main(String args[])
+{
+ServerSocket ss;
+Socket s;
+PrintStream ps;
+DataInputStream dis;
+String inet;
+try
+{
+ss=new ServerSocket(8020);
+while(true)
+{
+s=ss.accept();
+ps=new PrintStream(s.getOutputStream());
+Date d=new Date();
+ps.println(d);
+ps.close();
+}
+}
+catch(IOException e)
+{
+System.out.println("The exception is: "+e);
+} } }
+CLIENT PROGRAM
+import java.io.*;
+import java.net.*;
+class dateclient
+{
+public static void main(String args[])
+{
+Socket soc;
+DataInputStream dis;
+String sdate;
+PrintStream ps;
+try
+{
+InetAddress ia=InetAddress.getLocalHost();
+soc=new Socket(ia,8020);
+dis=new DataInputStream(soc.getInputStream());
+sdate=dis.readLine();
+System.out.println("The data in the server is: "+sdate);
+}
+catch(IOException e)
+{
+System.out.println("The exception is: "+e);
+}
+}
+}
+OUTPUT
+Server Side
+Client Side
+
+
+
+
+
+
+3. Echo UDP Server
+Aim: To design and implement a UDP server and client in Java, where the server receives a
+message from the client, processes it, and sends an echo response back to the client.
+Algorithm : Server
+1. Create a DatagramSocket bound to port 9876.
+2. Print "Server is running...".
+3. Continuously perform the following steps:
+3.1 Create a byte array buffer of size 1024 for receiving data.
+3.2 Create a DatagramPacket to receive data using the buffer.
+3.3 Receive data from the client using the DatagramSocket's receive method.
+3.4 Extract the message from the DatagramPacket and convert it to a string.
+3.5 Print the received message.
+3.6 Get the client's IP address and port from the received DatagramPacket.
+3.7 Create a response message prefixed with "Echo: ".
+3.8 Convert the response message to a byte array.
+3.9 Create a DatagramPacket to send the response using the byte array, client's IP address, and
+client's port.
+3.10 Send the response packet using the DatagramSocket's send method.
+3.11 Print the sent message.
+Algorithm : Client
+1. Create a DatagramSocket.
+2. Get the server's IP address (e.g., "localhost").
+3. Create byte arrays for sending and receiving data.
+4. Prompt the user to enter a message.
+5. Read the message from the user input.
+6. Convert the message to a byte array.
+7. Create a DatagramPacket to send the message to the server using the server's address and
+port 9876.
+8. Send the packet to the server using the DatagramSocket's send method.
+9. Print a message indicating the data has been sent.
+10. Prepare a DatagramPacket to receive the server's response.
+11. Receive the response from the server using the DatagramSocket's receive method.
+12. Convert the received byte data to a string.
+13. Print the server's response.
+14. Close the DatagramSocket and any other resources.
+UDP Server Program
+import java.io.*;
+import java.net.*;
+public class UDPServer {
+public static void main(String[] args) throws Exception
+{
+DatagramSocket serverSocket = new DatagramSocket(9876);
+byte[] receiveBuffer = new byte[1024];
+System.out.println("Server is running...");
+while (true)
+{
+DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
+serverSocket.receive(receivePacket);
+String receivedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
+System.out.println("Received from client: " + receivedMessage);
+InetAddress clientAddress = receivePacket.getAddress();
+int clientPort = receivePacket.getPort();
+String serverMessage = "Echo: " + receivedMessage;
+byte[] sendBuffer = serverMessage.getBytes();
+DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length,
+clientAddress, clientPort);
+serverSocket.send(sendPacket);
+System.out.println("Sent to client: " + serverMessage);
+}
+}
+}
+Client Program
+import java.io.*;
+import java.net.*;
+import java.util.*;
+public class UDPClient {
+public static void main(String[] args) throws Exception {
+DatagramSocket clientSocket = new DatagramSocket();
+InetAddress serverAddress = InetAddress.getByName("localhost");
+byte[] sendBuffer;
+byte[] receiveBuffer = new byte[1024];
+Scanner scanner = new Scanner(System.in);
+System.out.println("Enter a message to send to the server:");
+String message = scanner.nextLine();
+sendBuffer = message.getBytes();
+DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length,
+serverAddress, 9876);
+clientSocket.send(sendPacket);
+System.out.println("Sent to server: " + message);
+DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
+clientSocket.receive(receivePacket);
+String serverMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
+System.out.println("Received from server: " + serverMessage);
+clientSocket.close();
+scanner.close();
+}
+}
+
+
+
+
+
+
+4a) TCP Sockets - Echo Client & Server
+Algorithm - Server
+1. Import the required packages: java.io.* and java.net.*.
+2. Declare variables for ServerSocket, Socket, BufferedReader, and PrintStream. Initialize a String
+variable str.
+3. Create a ServerSocket object ss on port 2000.
+4. Call ss.accept() to accept a client connection and create a Socket object s.
+5. Create a BufferedReader object br to read data from the client.
+6. Create a PrintStream object ps to send data to the client.
+7. Print "Connected for echo:" to the console.
+8. While the input str read from br is not null:
+9. If str equals "end":
+a. Print "Client disconnected".
+b. Close the BufferedReader and exit the loop.
+10. Otherwise, send the received string back to the client using ps.println(str).
+11. Catch and print UnknownHostException.
+12. Catch and print IOException.
+Algorithm – Client
+1. Import the required packages: java.io.* and java.net.*.
+2. Declare variables for Socket, BufferedReader, and PrintStream. Initialize a String variable str.
+3. Create a Socket object cs to connect to the server at InetAddress.getLocalHost() on port 2000.
+4. Create a BufferedReader object br to read input from the user.
+5. Create a BufferedReader object br_sock to read data from the server.
+6. Create a PrintStream object ps to send data to the server.
+7. Print "Start echoing... type 'end' to terminate" to the console.
+8. While the input str read from br is not null:
+a. Send the string to the server using ps.println(str).
+b. If str equals "end", break the loop.
+c. Otherwise, print the echoed string received from the server using br_sock.readLine().
+9. Catch and print UnknownHostException.
+10. Catch and print IOException.
+Server Program
+import java.io.*;
+import java.net.*;
+class echoserver
+{
+public static void main(String args[]) throws Exception
+{
+String str;
+ServerSocket ss;
+Socket s;
+BufferedReader br;
+try
+{
+ss = new ServerSocket(2000);
+s = ss.accept();
+br = new BufferedReader (new InputStreamReader(s.getInputStream()));
+PrintStream ps = new PrintStream(s.getOutputStream());
+System.out.println("Connected for echo:");
+while((str=br.readLine())!=null)
+{
+if(str.equals("end"))
+{
+System.out.println("Client disconnected");
+br.close();
+break;
+}
+else
+ps.println(str);
+}
+}
+catch(UnknownHostException e)
+{
+System.out.println(e.toString());
+}
+catch(IOException ioe)
+{
+System.out.println(ioe);
+}
+}
+}
+Client Program
+import java.io.*;
+import java.net.*;
+class echoclient
+{
+public static void main(String args[]) throws Exception
+{
+String str;
+try
+{
+Socket cs = new Socket(InetAddress.getLocalHost(),2000);
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+BufferedReader br_sock = new BufferedReader(new
+InputStreamReader(cs.getInputStream()));
+PrintStream ps = new PrintStream(cs.getOutputStream());
+System.out.println("Start echoing... type 'end' to terminate");
+while((str=br.readLine())!=null)
+{
+ps.println(str);
+if(str.equals("end"))
+break;
+else
+System.out.println("echoed from server:"+br_sock.readLine());
+}
+}
+catch(UnknownHostException e)
+{
+System.out.println(e.toString());
+}
+catch(IOException ioe)
+{
+System.out.println(ioe);
+}
+}
+}
+Server Window
+Client Window
+Server Window – After client requesting the server to terminate connection by sending a “end”
+message
+Result
+Thus the program for TCP socket – Echo client server is successfully implemented.
+
+
+
+  4.b. TCP Socket – Chat
+Aim : Design a Chat application based on TCP Socket using Java language
+Server Algorithm
+1. Initialize ServerSocket by creating a ServerSocket object and bind it to a port (e.g., 2000).
+2. Accept Client Connection by waiting for a client to connect using the accept() method on
+the ServerSocket object, which returns a Socket object representing the client connection.
+3. Setup Input and Output Streams by creating a BufferedReader object to read data from the
+client, a PrintStream object to send data to the client, and a BufferedReader object to read
+data from the server console.
+4. Enter a communication loop:
+▪ Read a message from the client using cin.readLine().
+▪ If the message is "END", send "BYE" to the client using cout.println("BYE") and
+break the loop.
+▪ Print the client's message to the server console.
+▪ Read the server's response from the console using stdin.readLine().
+▪ Send the server's response to the client using cout.println(s).
+5. Close the ServerSocket, Socket, and all I/O streams.
+Client Algorithm
+1. Initialize Client Socket by creating a Socket object and connect to the server using the
+server's IP address (localhost) and port number (e.g., 2000).
+2. Setup Input and Output Streams by creating a BufferedReader object to read data from the
+server, a PrintStream object to send data to the server, and a BufferedReader object to read
+data from the client console.
+3. Enter a communication loop:
+▪ Read a message from the client console using stdin.readLine().
+▪ Send the client's message to the server using sout.println(s).
+▪ Read the server's response using sin.readLine().
+▪ Print the server's response to the client console.
+▪ If the server's response is "BYE", break the loop.
+4. Close the Socket and all I/O streams.
+Server Program
+import java.net.; import java.io.;
+
+public class chatserver
+
+1
+
+public static void main(String args[]) throws Exception
+
+ServerSocket so-new ServerSocket (2000);
+
+Socket sk-ss.accept();
+
+BufferedReader cin-new BufferedReader(new InputStreamReader(sk.getInputStream()));
+
+PrintStream cout-new PrintStream(sk.getOutputStream());
+
+BufferedReader stdin-new BufferedReader(new InputStreamReader(System.in)).
+
+String s.
+
+while(true)
+
+scin.readline();
+
+if (s.equalsIgnoreCase("END"))
+
+cout.println("BYE"), break
+
+System, out.print("Client: "+s+"\n"); System.out.print("Server: " stdin.readLine() cout.println(s);
+
+ss.close(), sk close cin.close(). cout.closets. stdin.close()
+
+import java.io.*.
+
+import java.net":
+
+public class chatclient
+
+public static void main(String args[]) throws Exception
+
+Socket sk-new Socket(InetAddress.getLocalHost(),2000);
+
+BufferedReader sin-new BufferedReader(new InputStreamReader(sk. getInputStream())); PrintStream sout-new PrintStream(sk.getOutputStream());
+
+BufferedReader stdin-new BufferedReader(new InputStreamReader(System.in)); String s;
+
+while(true)
+
+System.out.print("Client: ");
+
+s-stdin.readLine();
+
+sout.println(s), s-sin.readLine().
+
+System.out.print("Server: "+"");
+
+if (s.equalsIgnoreCase("BYE"))
+
+break:
+
+1
+
+sk.close().
+
+sin.close();
+
+sout.close()
+
+stdin.close();
+
+
+
+
+
+Ex 5 DAEMON PROGRAM
+ A daemon (pronounced DEE-muhn) is a program that runs continuously and exists
+for the purpose of handling periodic service requests that a computer system
+expects to receive.
+ The daemon program forwards the requests to other programs (or processes) as
+appropriate.
+Daemon thread in Java
+Daemon thread is a low priority thread that runs in background to perform tasks such as
+garbage collection.
+Properties:
+ They can not prevent the JVM from exiting when all the user threads finish their
+execution.
+ JVM terminates itself when all user threads finish their execution
+ If JVM finds running daemon thread, it terminates the thread and after that
+shutdown itself.
+ JVM does not care whether Daemon thread is running or not.
+ It is an utmost low priority thread.
+Methods:
+1. void setDaemon(boolean status): This method is used to mark the current thread
+as daemon thread or user thread. For example if I have a user thread tU then
+tU.setDaemon(true) would make it Daemon thread.
+2. On the other hand if I have a Daemon thread tD then by calling
+tD.setDaemon(false) would make it user thread.
+Syntax:
+3. public final void setDaemon(boolean on)
+4. parameters:
+5. on : if true, marks this thread as a daemon thread.
+6. exceptions:
+7. IllegalThreadStateException: if only this thread is active.
+SecurityException: if the current thread cannot modify this thread.
+8. booleanisDaemon():
+This method is used to check that current is daemon. It returns true if the thread is
+Daemon else it returns false.
+Syntax:
+public final booleanisDaemon()
+returns:
+This method returns true if this thread is a daemon thread;
+false otherwise
+// Java program to demonstrate the usage of
+// setDaemon() and isDaemon() method.
+public class DaemonThread extends Thread
+{
+public DaemonThread(String name){
+super(name);
+}
+public void run()
+{
+// Checking whether the thread is Daemon or not
+if(Thread.currentThread().isDaemon())
+{
+}
+else
+{
+}
+}
+System.out.println(getName() + " is Daemon thread");
+System.out.println(getName() + " is User thread");
+public static void main(String[] args)
+{
+DaemonThread t1 = new DaemonThread("t1");
+DaemonThread t2 = new DaemonThread("t2");
+DaemonThread t3 = new DaemonThread("t3");
+// Setting user thread t1 to Daemon
+t1.setDaemon(true);
+// starting first 2 threads
+t1.start();
+t2.start();
+// Setting user thread t3 to Daemon
+t3.setDaemon(true);
+t3.start();
+}
+}
+Output:
+t1 is Daemon thread
+t3 is Daemon thread
+t2 is User thread
+
+
+
+
+
+
+6. Implementing stop and wait protocol
+Aim:
+To design the stop-and-wait protocol for sending and receiving data frames in a network
+using Java implementations.
+Algorithm – Sender
+1. Create an instance of the Scanner class to read input from the user.
+2. Prompt the user to enter the number of frames (n) to be sent.
+3. Establish a connection to the receiver using a Socket object on the specified host
+(localhost) and port (9999).
+4. Create a PrintStream object to send data through the socket.
+5. Initialize the frame counter i to 0.
+6. Repeat the following steps until all frames are sent (i < n):
+ If i equals n (all frames have been sent):
+o Send an "exit" message to the receiver to indicate that the transmission is
+complete.
+o Break the loop.
+ Print a message indicating that frame i is being sent.
+ Send the frame number i to the receiver using the PrintStream.
+ Create a BufferedReader object to read the acknowledgment from the receiver.
+ Read the acknowledgment from the receiver.
+ If an acknowledgment is received (ack is not null):
+o Print a message indicating that the acknowledgment was received.
+o Increment the frame counter i by 1 to move to the next frame.
+o Pause the process for 4 seconds to simulate network delay or processing time.
+ If no acknowledgment is received (ack is null):
+o Resend the current frame i to the receiver.
+7. Once all frames are sent and acknowledged, the loop exits.
+8. The connection to the receiver is closed automatically when the program ends.
+Algorithm Receiver
+1. Create an instance of the stopwaitreceiver class.
+2. Call the run method to start the receiver process.
+3. Initialize a string temp with any non-exit message (e.g., "any message") and another
+string str with the value "exit".
+4. Create a ServerSocket object to listen for incoming connections on port 9999.
+5. Accept an incoming connection from the sender using the accept method of the
+ServerSocket object.
+6. Create a BufferedReader object to read data from the sender through the socket's input
+stream.
+7. Create a PrintStream object to send acknowledgments back to the sender through the
+socket's output stream.
+8. Repeat the following steps until the exit message ("exit") is received:
+ Pause the process for 1 second using Thread.sleep(1000).
+ Read the incoming frame from the sender using the BufferedReader.
+ If the received frame equals "exit", break the loop.
+ Print a message indicating that the frame was received.
+ Pause the process for 500 milliseconds using Thread.sleep(500).
+ Send an acknowledgment ("Received") back to the sender using the PrintStream.
+9. Once the exit message is received and the loop exits, print a message indicating that all
+frames were received successfully.
+10. The program ends, and the connection is automatically closed.
+Sender program
+Receiver Program
+Sender program
+
+import java.io
+
+import java.net..
+
+import java.util.Scanner.
+
+class stopwaitsenda
+
+(
+
+public static void main(String args) throws Exception
+
+stupwaitsender sws new stopwaitsonder.
+
+public void run() throws Exception
+
+Scanner ac-new Scanner(System.in) System.out.println("Enter no of frames to be sent"); int n=sc nextInt(): Socket myskt-new Socket("localhost",9999); PrintStream myps-new PrintStream(myskt getOutputStreamO). forint i=0;n) (
+
+ifi-n)
+
+(
+
+myps.println(x)
+
+break
+
+System.out.println("Frame no: "+i+" is sent"); myps.println(i). BufferedReader bf-new BufferedReader(new InputStreamReader(myskt.getInputStream()). String ack-bf.readLine(): if(ack!null)
+
+(
+
+Sem.out.printing Acknowledgement was Received from receiver"); Thread sleep(4000);
+
+maps.println(i).
+
+else
+
+1
+
+
+
+
+Receiver Program
+
+import java.io.*;
+
+import java.net.*;
+
+class stopwaitreceiver
+
+{
+
+public static void main(String args[]) throws Exception
+
+{
+
+stopwaitreceiver swr new stopwaitreceiver(): swr.run();
+
+public void run() throws Exception
+
+{
+
+String temp="any message" str="exit";
+
+Socket ss accept myss.accept();
+
+ServerSocket myss=new ServerSocket(9999); BufferedReader ss bf-new BufferedReader(new InputStreamReader(ss_accept getluputStream())); PrintStream myps-new PrintStream(ss_accept.getOutputStream()); while(temp.compareTo(str)!=0) {
+
+Thread.sleep(1000);
+
+temp-ss_bf.readLine(): if(temp.compareTo(str)-0)
+
+(break:)
+
+System.out.println("Frame "+temp+" was received");
+
+Thread sleep(500);
+
+myps.println("Received");
+
+} System.out.print("ALL FRAMES WERE RECEIVED SUCCESSFULLY");
